@@ -6,30 +6,29 @@
 </head>
 <body>
 
-  <table style="width:100%">
-    <tr>
-      <td>1.</td>
-      <td>
-        <form>
-          <input type="text" name="question-1" placeholder="Type your quiz here!"> <br/>
-          <input type="radio" name="question-1-option" value="option-1"> <input type="text" name="option-1-text" placeholder="Type option 1!"> <br/>
-          <input type="radio" name="question-1-option" value="option-2"> <input type="text" name="option-2-text" placeholder="Type option 2!"> <br/>
-          <input type="radio" name="question-1-option" value="option-3"> <input type="text" name="option-3-text" placeholder="Type option 3!"> <br/>
-          <a href="#" onclick="addOption()">+ Add more option</a> <br/>
-        </form>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <a href="#" onclick="addOption()">+ Add more question</a>
-      </td>
-      <td>
-        <input type="submit">
-      </td>
-    </tr>
-  </table>
+  <form>
+    <table style="width:100%">
+      <tr>
+        <td>1.</td>
+        <td>
+          <input type="text" name="question-1" placeholder="Type your quiz here!" class="question-text"> <br/>
+          <input type="radio" name="question-1-option" value="question-1-option-1" checked> <input type="text" name="question-1-option-1-text" placeholder="Type option 1!" class="option-text"> <br/>
+          <a href="#" onclick="addOption(this)">+ Add more option</a> <br/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="#" onclick="addQuestion(this)">+ Add more question</a>
+        </td>
+        <td>
+          <input type="submit" onclick="generateQuiz(event)">
+        </td>
+      </tr>
+    </table>
+  </form>
 
 
   <script src="script.js"></script>
+
 </body>
 </html>
