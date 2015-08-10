@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+
+  <table style="width:100%">
+    <tr>
+      <td>1.</td>
+      <td>
+        <form>
+          <input type="text" name="question-1" placeholder="Type your quiz here!"> <br/>
+          <input type="radio" name="question-1-option" value="option-1"> <input type="text" name="option-1-text" placeholder="Type option 1!"> <br/>
+          <input type="radio" name="question-1-option" value="option-2"> <input type="text" name="option-2-text" placeholder="Type option 2!"> <br/>
+          <input type="radio" name="question-1-option" value="option-3"> <input type="text" name="option-3-text" placeholder="Type option 3!"> <br/>
+          <a href="#" onclick="addOption()">+ Add more option</a> <br/>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#" onclick="addOption()">+ Add more question</a>
+      </td>
+      <td>
+        <input type="submit">
+      </td>
+    </tr>
+  </table>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
