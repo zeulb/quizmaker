@@ -213,6 +213,7 @@ function addOption() {
 }
 
 function addQuestion() {
+  if (numberOfQuestion >= 25) return;
   var controlNode = document.getElementById("quiz-control");
   var tableNode = controlNode.parentNode;
   var newQuestionId = numberOfQuestion++;
@@ -228,6 +229,10 @@ function addQuestion() {
   addOption();
   addOption();
   addOption();
+
+  if (numberOfQuestion === 25) {
+    document.querySelector("#quiz-control > tr > td.text-right > button.btn.btn-warning.btn-lg").setAttribute("disabled", "");
+  }
 }
 
 function removeOption(target) {
