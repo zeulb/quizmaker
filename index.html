@@ -15,42 +15,24 @@
       <div class="col-md-1"></div>
       <div class="col-md-10">
         <form class="form-inline">
-          <h2 id="question-title">Question 1</h2> <!-- Change this when moving to next question (#question-title)-->
+          <h2 id="current-question-title">Question 1</h2> <!-- Change this when moving to next question (#question-title)-->
           <div class="form-group">
             <table class="table borderless">
-              <tbody id="question-1">
-                <!-- This row only added on new question -->
-                <tr>
-                  <td colspan="2">
-                    <input type="text" name="question-1" placeholder="Type your question here!" size="90" class="form-control input-lg"> <br/>
-                  </td>
-                </tr>
-
-                <!-- Option row -->
-                <tr>
-                  <td colspan="2">
-                    <div class="radio">
-                      <label class="radio-inline">
-                        <input type="radio" name="question-1-option" value="option-1" checked>&nbsp;&nbsp;
-                        <input type="text" placeholder="Type option text!" size="84" class="form-control input-lg"> <br/>
-                      </label>
-
-                    </div>
-                    &nbsp;<span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="removeOption(this)"></span>
-                  </td>
-                </tr>
+              <tbody>
               </tbody>
 
               <!-- Last row of the table for option -->
-              <tr>
-                <td>
-                  <button type="button" class="btn btn-primary btn-lg" onclick="addOption(this)"> Add Option </button>
-                </td>
-                <td class="text-right">
-                  <button type="button" class="btn btn-warning btn-lg" onclick="addQuestion(this)"> Add Question </button>
-                  <button type="button" class="btn btn-success btn-lg" onclick="generateQuiz(event)"> Start Quiz! </button>
-                </td>
-              </tr>
+              <tbody id="quiz-control">
+                <tr>
+                  <td>
+                    <button type="button" class="btn btn-primary btn-lg" onclick="addOption()"> Add Option </button>
+                  </td>
+                  <td class="text-right">
+                    <button type="button" class="btn btn-warning btn-lg" onclick="addQuestion()"> Add Question </button>
+                    <button type="button" class="btn btn-success btn-lg" onclick="generateQuiz()"> Start Quiz! </button>
+                  </td>
+                </tr>
+              </tbody>
 
             </table>
           </div>
@@ -63,7 +45,6 @@
 
 
   <script src="script.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 </body>
 </html>

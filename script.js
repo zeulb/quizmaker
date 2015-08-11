@@ -2,170 +2,163 @@
  * Created by zeulb on 8/10/15.
  */
 
-function newLineNode() {
+var currentQuestion = -1;
+var numberOfQuestion = 0;
+var numberOfOptionList = [];
+
+function createNewLineNode() {
   return document.createElement("br");
 }
 
-function newTextNode(text) {
-  return document.createTextNode(text);
-}
+function createOptionNode(questionId, optionId) {
+  /*
+    HTML Format :
+     <tr>
+       <td colspan="2">
+         <div class="radio">
+           <label class="radio-inline">
+             <input type="radio" name="question-{questionId}-option" value="option-{optionId}" checked>
+             &nbsp;&nbsp;
+             <input type="text" placeholder="Type option text!" size="84" class="form-control input-lg">
+             <br/>
+           </label>
+         </div>
+         &nbsp;<span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="removeOption(this)"></span>
+       </td>
+     </tr>
+   */
 
-function addOption(target) {
-  var parent = target.parentNode;
+  // create <tr>
+  var trNode = document.createElement("tr");
 
-  var questionNumber = parent.getElementsByTagName("input")[0].getAttribute("name");
-  var questionOptionName = questionNumber+"-option";
+  // create <td colspan="2">
+  var tdNode = document.createElement("td");
+  tdNode.setAttribute("colspan", "2");
 
-  var currentNumberOfOption = (parent.getElementsByTagName("input").length-1)/2;
+  // create <div class="radio">
+  var divNode = document.createElement("div");
+  divNode.setAttribute("class", "radio");
 
-  var newNumberOfOption = currentNumberOfOption+1;
-  var newOptionName = questionOptionName+"-"+newNumberOfOption;
+  // create <label class="radio-inline">
+  var labelNode = document.createElement("label");
+  labelNode.setAttribute("class", "radio-inline");
 
-  var newOptionNode = document.createElement("input");
-  newOptionNode.setAttribute("type", "radio");
-  newOptionNode.setAttribute("name", questionOptionName);
-  newOptionNode.setAttribute("value", newOptionName);
-  if (currentNumberOfOption === 0) {
-    newOptionNode.setAttribute("checked", "");
+  // create radio button node
+  var radioNode = document.createElement("input");
+  radioNode.setAttribute("type", "radio");
+  radioNode.setAttribute("name", "question-"+questionId+"-option");
+  radioNode.setAttribute("value", "option-"+optionId);
+  if (optionId === 0) {
+    radioNode.setAttribute("checked", "");
   }
 
-  var newOptionTextNode = document.createElement("input");
-  newOptionTextNode.setAttribute("type", "text");
-  newOptionTextNode.setAttribute("name", newOptionName+"-text");
-  newOptionTextNode.setAttribute("placeholder", "Type option "+newNumberOfOption+"!");
-  newOptionTextNode.setAttribute("class", "option-text");
+  // create option text node
+  var optionTextNode = document.createElement("input");
+  optionTextNode.setAttribute("type", "text");
+  optionTextNode.setAttribute("placeholder", "Type option text!");
+  optionTextNode.setAttribute("size", "84");
+  optionTextNode.setAttribute("class", "form-control input-lg");
 
+  // create remove option node
+  var removeOptionNode = document.createElement("span");
+  removeOptionNode.setAttribute("class", "glyphicon glyphicon-remove");
+  removeOptionNode.setAttribute("aria-hidden", "true");
+  removeOptionNode.setAttribute("onclick", "removeOption(this)");
 
-  parent.insertBefore(newOptionNode, target);
-  parent.insertBefore(newTextNode(" "), target);
-  parent.insertBefore(newOptionTextNode, target);
-  parent.insertBefore(newLineNode(), target);
+  // attach to labelNode
+  labelNode.appendChild(radioNode);
+  labelNode.appendChild(document.createTextNode("\u00A0\u00A0"));
+  labelNode.appendChild(optionTextNode);
+  labelNode.appendChild(createNewLineNode());
 
+  // attach to divNode
+  divNode.appendChild(labelNode);
+
+  // attach to tdNode
+  tdNode.appendChild(divNode);
+  tdNode.appendChild(document.createTextNode("\u00A0"));
+  tdNode.appendChild(removeOptionNode);
+
+  // attach to trNode
+  trNode.appendChild(tdNode);
+
+  console.log(trNode);
+  document.body.appendChild(trNode);
+
+  return trNode;
 }
 
-function addQuestion(target) {
-  var parent = target.parentNode.parentNode.parentNode;
-  var parentChild = target.parentNode.parentNode;
+function createQuestionNode(questionId) {
+  /*
+    HTML Format :
+    <tbody id="question-0-section">
+      <tr>
+        <td colspan="2">
+          <input type="text" name="question-{questionId}-text" placeholder="Type your question here!" size="90" class="form-control input-lg"> <br/>
+        </td>
+      </tr>
 
-  var currentNumberOfQuestion = parent.getElementsByTagName("tr").length-1;
+    </tbody>
+   */
 
-  var newNumberOfQuestion = currentNumberOfQuestion+1;
-  var questionName = "question-"+newNumberOfQuestion;
+  // create tbody node
+  var tbodyNode = document.createElement("tbody");
+  tbodyNode.setAttribute("id", "question-"+questionId+"-section");
 
-  var newRow = document.createElement("tr");
+  // create tr node
+  var trNode = document.createElement("tr");
 
-  var numberNode = document.createElement("td");
-  numberNode.innerHTML = newNumberOfQuestion.toString()+".";
+  // create td node
+  var tdNode = document.createElement("td");
+  tdNode.setAttribute("colspan", "2");
 
-  newRow.appendChild(numberNode);
+  // create question text node
+  var questionTextNode = document.createElement("input");
+  questionTextNode.setAttribute("type", "text");
+  questionTextNode.setAttribute("name", "question-"+questionId+"-text");
+  questionTextNode.setAttribute("placeholder", "Type your question here!");
+  questionTextNode.setAttribute("size", "90");
+  questionTextNode.setAttribute("class", "form-control input-lg");
 
-  var newQuestionNode = document.createElement("td");
+  tdNode.appendChild(questionTextNode);
+  trNode.appendChild(tdNode);
+  tbodyNode.appendChild(trNode);
 
-  var newQuestionTextNode = document.createElement("input");
-  newQuestionTextNode.setAttribute("type", "text");
-  newQuestionTextNode.setAttribute("name", questionName);
-  newQuestionTextNode.setAttribute("placeholder", "Type your quiz here!");
-  newQuestionTextNode.setAttribute("class", "question-text");
-
-  var newAddOptionNode = document.createElement("a");
-  newAddOptionNode.setAttribute("href", "#");
-  newAddOptionNode.setAttribute("onclick", "addOption(this)");
-  newAddOptionNode.innerHTML = "+ Add more option";
-
-  newQuestionNode.appendChild(newQuestionTextNode);
-  newQuestionNode.appendChild(newLineNode());
-  newQuestionNode.appendChild(newAddOptionNode);
-  newQuestionNode.appendChild(newLineNode());
-
-
-  newRow.appendChild(newQuestionNode);
-
-  parent.insertBefore(newRow, parentChild);
-
-  addOption(newAddOptionNode);
-
-
+  return tbodyNode;
 }
 
-var answerKey;
-
-function collectQuestions() {
-  var inputData = document.getElementsByTagName("input");
-  var correctData = [];
-  for (var index = 0; index < inputData.length; index++) {
-    node = inputData[index];
-    if (node.getAttribute("type") === "radio") {
-      if (node.checked) {
-        correctData.push(node.getAttribute("value"));
-      }
-    }
-  }
-  return correctData;
+function hideCurrentQuestion() {
+  if (currentQuestion === -1)
+    return;
+  var currentQuestionNode = document.getElementById("question-"+currentQuestion+"-section");
+  currentQuestionNode.setAttribute("hidden", "");
 }
 
-function transformInput() {
-  var inputData = document.getElementsByTagName("input");
-  for (var index = inputData.length-1; index >= 0; index--) {
-    var node = inputData[index];
-    if (node.getAttribute("type") === "submit") {
-      node.setAttribute("onclick", "checkAnswer(event)");
-    }
-    else if (node.getAttribute("type") === "radio") {
-      if (!!node.checked) {
-        node.checked = false;
-      }
-    }
-    else {
-      parent = node.parentNode;
-      parent.replaceChild(newTextNode(node.value), node);
-    }
-  }
+function addOption() {
+  var tbodyNode = document.getElementById("question-"+currentQuestion+"-section");
+  var newOptionId = numberOfOptionList[currentQuestion]++;
+  tbodyNode.appendChild(createOptionNode(currentQuestion, newOptionId));
 }
 
-function removeAddOptionAndQuestion() {
-  var linkElements = document.getElementsByTagName("a");
-  for(var index = linkElements.length-1; index >= 0; index--) {
-    var node = linkElements[index];
-    node.parentNode.removeChild(node);
-  }
+function addQuestion() {
+  var controlNode = document.getElementById("quiz-control");
+  var tableNode = controlNode.parentNode;
+  var newQuestionId = numberOfQuestion++;
+
+  hideCurrentQuestion();
+
+  numberOfOptionList.push(0);
+  currentQuestion = newQuestionId;
+
+  tableNode.insertBefore(createQuestionNode(newQuestionId), controlNode);
+
+  // Add three options
+  addOption();
+  addOption();
+  addOption();
+
+  // change current question title
+  document.getElementById("current-question-title").innerHTML = "Question "+(currentQuestion+1);
 }
 
-function generateQuiz(event) {
-  event.preventDefault();
-  answerKey = collectQuestions();
-  transformInput();
-  removeAddOptionAndQuestion();
-}
-
-function checkAnswer(event) {
-  console.log(answerKey);
-  event.preventDefault();
-  var inputData = Array.prototype.slice.call(document.getElementsByTagName("input"));
-  var correctCount = 0;
-  var submitNode;
-  for (var index = 0; index < inputData.length; index++) {
-    node = inputData[index];
-    if (node.getAttribute("type") === "radio") {
-      if (!!node.checked) {
-        if (answerKey.indexOf(node.getAttribute("value")) >= 0) {
-          correctCount++;
-          parent = node.parentNode;
-          parent.replaceChild(newTextNode("\u2714"), node);
-        }
-        else {
-          parent = node.parentNode;
-          parent.replaceChild(newTextNode("\u2716"), node);
-        }
-      }
-      else {
-        parent = node.parentNode;
-        parent.replaceChild(newTextNode("\u2750"), node);
-      }
-    }
-    else if (node.getAttribute("type") === "submit") {
-      submitNode = node;
-    }
-  }
-  parent = submitNode.parentNode;
-  parent.replaceChild(newTextNode("You got "+correctCount+" answer correct!"), submitNode);
-}
+addQuestion();
