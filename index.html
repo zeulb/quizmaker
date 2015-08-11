@@ -2,33 +2,68 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title></title>
+  <title>QuizMaker</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
 </head>
 <body>
+  <div class="container">
+    <div class="row row-divider"><h1>Quiz Maker <small>beta</small></h1></div>
+    <div class="row"><h1></h1></div>
+    <div class="row row-divider">
 
-  <form>
-    <table style="width:100%">
-      <tr>
-        <td>1.</td>
-        <td>
-          <input type="text" name="question-1" placeholder="Type your quiz here!" class="question-text"> <br/>
-          <input type="radio" name="question-1-option" value="question-1-option-1" checked> <input type="text" name="question-1-option-1-text" placeholder="Type option 1!" class="option-text"> <br/>
-          <a href="#" onclick="addOption(this)">+ Add more option</a> <br/>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <a href="#" onclick="addQuestion(this)">+ Add more question</a>
-        </td>
-        <td>
-          <input type="submit" onclick="generateQuiz(event)">
-        </td>
-      </tr>
-    </table>
-  </form>
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+        <form class="form-inline">
+          <h2 id="question-title">Question 1</h2> <!-- Change this when moving to next question (#question-title)-->
+          <div class="form-group">
+            <table class="table borderless">
+              <tbody id="question-1">
+                <!-- This row only added on new question -->
+                <tr>
+                  <td colspan="2">
+                    <input type="text" name="question-1" placeholder="Type your question here!" size="90" class="form-control input-lg"> <br/>
+                  </td>
+                </tr>
+
+                <!-- Option row -->
+                <tr>
+                  <td colspan="2">
+                    <div class="radio">
+                      <label class="radio-inline">
+                        <input type="radio" name="question-1-option" value="option-1" checked>&nbsp;&nbsp;
+                        <input type="text" placeholder="Type option text!" size="84" class="form-control input-lg"> <br/>
+                      </label>
+
+                    </div>
+                    &nbsp;<span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="removeOption(this)"></span>
+                  </td>
+                </tr>
+              </tbody>
+
+              <!-- Last row of the table for option -->
+              <tr>
+                <td>
+                  <button type="button" class="btn btn-primary btn-lg" onclick="addOption(this)"> Add Option </button>
+                </td>
+                <td class="text-right">
+                  <button type="button" class="btn btn-warning btn-lg" onclick="addQuestion(this)"> Add Question </button>
+                  <button type="button" class="btn btn-success btn-lg" onclick="generateQuiz(event)"> Start Quiz! </button>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </form>
+
+      </div>
+
+    </div>
+  </div>
 
 
   <script src="script.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 </body>
 </html>
