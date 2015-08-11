@@ -5,6 +5,11 @@
 var currentQuestion = -1;
 var numberOfQuestion = 0;
 var numberOfOptionList = [];
+var statusClass = {
+  "current": "btn btn-warning btn-sm",
+  "valid": "btn btn-success btn-sm",
+  "invalid": "btn btn-danger btn-sm"
+};
 
 function createNewLineNode() {
   return document.createElement("br");
@@ -79,7 +84,6 @@ function createOptionNode(questionId, optionId) {
   // attach to trNode
   trNode.appendChild(tdNode);
 
-  console.log(trNode);
   document.body.appendChild(trNode);
 
   return trNode;
@@ -94,7 +98,6 @@ function createQuestionNode(questionId) {
           <input type="text" name="question-{questionId}-text" placeholder="Type your question here!" size="90" class="form-control input-lg"> <br/>
         </td>
       </tr>
-
     </tbody>
    */
 
@@ -124,11 +127,83 @@ function createQuestionNode(questionId) {
   return tbodyNode;
 }
 
-function hideCurrentQuestion() {
-  if (currentQuestion === -1)
-    return;
-  var currentQuestionNode = document.getElementById("question-"+currentQuestion+"-section");
-  currentQuestionNode.setAttribute("hidden", "");
+function isBlank(str) {
+  return (!str || /^\s*$/.test(str));
+}
+
+function checkValidity(questionId) {
+
+
+  // assert question text not blank
+  var questionTextNode = document.querySelector("#question-"+questionId+"-section > tr:nth-child(1) > td > input");
+  if (isBlank(questionTextNode.value)) {
+    return "invalid";
+  }
+
+  var index;
+  // assert all option text not blank
+  var optionNodes = document.querySelectorAll("#question-"+questionId+"-section > tr > td > div > label > input.form-control.input-lg");
+  for(index = 0; index < optionNodes.length; index++) {
+    var optionNode = optionNodes[index];
+    if (isBlank(optionNode.value)) {
+      return "invalid";
+    }
+  }
+
+  // iterate over all radio button
+  var countChecked = 0;
+  var radioOptionNodes = document.querySelectorAll("#question-"+questionId+"-section > tr > td > div > label > input[type=\"radio\"]:nth-child(1)");
+  for(index = 0; index < radioOptionNodes.length; index++) {
+    var radioOptionNode = radioOptionNodes[index];
+    if (radioOptionNode.checked) {
+      countChecked++;
+    }
+  }
+
+  // assert exactly one checked
+  return (countChecked===1)?"valid":"invalid";
+}
+
+function updateStatus(questionId, status) {
+  var statusNode = document.getElementById("status-"+questionId);
+  statusNode.setAttribute("class", statusClass[status]);
+}
+
+function setCurrentQuestionTo(questionId) {
+  if (currentQuestion !== -1) {
+    // Update status bar
+    updateStatus(currentQuestion, checkValidity(currentQuestion));
+    // Hide current question
+    var currentQuestionNode = document.getElementById("question-"+currentQuestion+"-section");
+    currentQuestionNode.setAttribute("hidden", "");
+  }
+
+  // Change current question
+  currentQuestion = questionId;
+  // Update title with current question
+  document.getElementById("current-question-title").innerHTML = "Question "+(currentQuestion+1);
+  // Remove hidden attribute from current question
+  var newCurrentQuestionNode = document.getElementById("question-"+currentQuestion+"-section");
+  newCurrentQuestionNode.removeAttribute("hidden");
+
+  updateStatus(questionId, "current");
+}
+
+function changeQuestionTo(target) {
+  var questionId = parseInt(target.innerHTML)-1;
+  setCurrentQuestionTo(questionId);
+}
+
+function addToStatusBar(questionId) {
+  var statusContainerNode = document.getElementById("question-status");
+  var statusNode = document.createElement("button");
+  statusNode.setAttribute("type", "button");
+  statusNode.setAttribute("class", statusClass["current"]);
+  statusNode.setAttribute("id", "status-"+questionId);
+  statusNode.setAttribute("onclick", "changeQuestionTo(this)");
+  statusNode.innerHTML = (questionId+1).toString();
+  statusContainerNode.appendChild(statusNode);
+  statusContainerNode.appendChild(document.createTextNode("\u00A0"));
 }
 
 function addOption() {
@@ -142,20 +217,17 @@ function addQuestion() {
   var tableNode = controlNode.parentNode;
   var newQuestionId = numberOfQuestion++;
 
-  hideCurrentQuestion();
-
   numberOfOptionList.push(0);
-  currentQuestion = newQuestionId;
 
   tableNode.insertBefore(createQuestionNode(newQuestionId), controlNode);
+  addToStatusBar(newQuestionId);
+
+  setCurrentQuestionTo(newQuestionId);
 
   // Add three options
   addOption();
   addOption();
   addOption();
-
-  // change current question title
-  document.getElementById("current-question-title").innerHTML = "Question "+(currentQuestion+1);
 }
 
 function removeOption(target) {
