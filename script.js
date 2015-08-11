@@ -48,9 +48,6 @@ function createOptionNode(questionId, optionId) {
   radioNode.setAttribute("type", "radio");
   radioNode.setAttribute("name", "question-"+questionId+"-option");
   radioNode.setAttribute("value", "option-"+optionId);
-  if (optionId === 0) {
-    radioNode.setAttribute("checked", "");
-  }
 
   // create option text node
   var optionTextNode = document.createElement("input");
@@ -159,6 +156,12 @@ function addQuestion() {
 
   // change current question title
   document.getElementById("current-question-title").innerHTML = "Question "+(currentQuestion+1);
+}
+
+function removeOption(target) {
+  var optionNode = target.parentNode.parentNode;
+  var parentNode = optionNode.parentNode;
+  parentNode.removeChild(optionNode);
 }
 
 addQuestion();
