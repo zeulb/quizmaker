@@ -11,6 +11,33 @@ var statusClass = {
   "invalid": "btn btn-danger btn-sm"
 };
 
+function deleteAllCookies() {
+  var cookies = document.cookie.split(";");
+
+  for (var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i];
+    var eqPos = cookie.indexOf("=");
+    var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  }
+}
+
+function dateIn(days) {
+  var d = new Date();
+  d.setTime(d.getTime() + (days*24*60*60*1000));
+  return d.toUTCString();
+}
+
+function storeToCookie(obj) {
+  deleteAllCookies();
+  var cookie = "";
+  for (var element in obj) {
+    cookie += (element+"="+obj[element]+"; ");
+  }
+  cookie += "expires="+dateIn(365);
+  document.cookie = cookie;
+}
+
 function createNewLineNode() {
   return document.createElement("br");
 }
@@ -131,18 +158,30 @@ function isBlank(str) {
   return (!str || /^\s*$/.test(str));
 }
 
+function getQuestionTextNode(questionId) {
+  return document.querySelector("#question-"+questionId+"-section > tr:nth-child(1) > td > input");
+}
+
+function getOptionTextNodes(questionId) {
+  return document.querySelectorAll("#question-"+questionId+"-section > tr > td > div > label > input.form-control.input-lg");
+}
+
+function getOptionRadioNodes(questionId) {
+  return document.querySelectorAll("#question-"+questionId+"-section > tr > td > div > label > input[type=\"radio\"]:nth-child(1)");
+}
+
 function checkValidity(questionId) {
 
 
   // assert question text not blank
-  var questionTextNode = document.querySelector("#question-"+questionId+"-section > tr:nth-child(1) > td > input");
+  var questionTextNode = getQuestionTextNode(questionId);
   if (isBlank(questionTextNode.value)) {
     return "invalid";
   }
 
   var index;
   // assert all option text not blank
-  var optionNodes = document.querySelectorAll("#question-"+questionId+"-section > tr > td > div > label > input.form-control.input-lg");
+  var optionNodes = getOptionTextNodes(questionId);
   for(index = 0; index < optionNodes.length; index++) {
     var optionNode = optionNodes[index];
     if (isBlank(optionNode.value)) {
@@ -152,7 +191,7 @@ function checkValidity(questionId) {
 
   // iterate over all radio button
   var countChecked = 0;
-  var radioOptionNodes = document.querySelectorAll("#question-"+questionId+"-section > tr > td > div > label > input[type=\"radio\"]:nth-child(1)");
+  var radioOptionNodes = getOptionRadioNodes(questionId);
   for(index = 0; index < radioOptionNodes.length; index++) {
     var radioOptionNode = radioOptionNodes[index];
     if (radioOptionNode.checked) {
@@ -242,3 +281,47 @@ function removeOption(target) {
 }
 
 addQuestion();
+
+
+function saveQuiz() {
+  var questionId;
+  var questionsData = [];
+  // Iterate over all questions
+  for(questionId=0; questionId<numberOfQuestion; questionId++) {
+    // Check if valid
+    if (checkValidity(questionId) === "invalid") {
+      alert("Some questions not valid");
+      return false;
+    }
+    var questionText = getQuestionTextNode(questionId).value;
+    var optionsText = [];
+    var correctOption = -1;
+
+    var optionTextNodes = getOptionTextNodes(questionId);
+    var index = 0;
+    for(index=0; index<optionTextNodes.length; index++) {
+      var optionTextNode = optionTextNodes[index];
+      optionsText.push(optionTextNode.value);
+    }
+
+    var optionRadioNodes = getOptionRadioNodes(questionId);
+    for(index=0; index<optionRadioNodes.length; index++) {
+      var optionRadioNode = optionRadioNodes[index];
+      if (optionRadioNode.checked) {
+        correctOption = index;
+      }
+    }
+
+    questionsData.push({
+        "question": questionText,
+        "options": optionsText,
+        "correct-option": correctOption
+      }
+    )
+  }
+
+  // store this to cookies
+  storeToCookie({"quiz": JSON.stringify(questionsData)});
+  return true;
+}
+
