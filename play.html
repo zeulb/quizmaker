@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QuizMaker</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <div class="row row-divider"><h1 class="col-md-3">Quiz Maker <small>beta</small></h1><h1 class="col-md-9"> |   &nbsp;&nbsp; Play</h1></div>
+  <div class="row"><h1></h1></div>
+  <div class="row row-divider">
+
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <div id="question-status"></div>
+      <form class="form-inline">
+        <h2 id="current-question-title">Question 1</h2> <!-- Change this when moving to next question (#question-title)-->
+        <div class="form-group">
+          <table class="table borderless">
+            <tbody>
+            </tbody>
+
+            <!-- Last row of the table for option -->
+            <tbody id="quiz-control">
+            <tr>
+              <td class="text-right" colspan="2">
+                <button type="button" class="btn btn-success btn-lg" onclick="checkAnswer()"> Finish! </button>
+              </td>
+            </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
+
+<script src="play.js"></script>
+
+</body>
+</html>

@@ -325,3 +325,7 @@ function saveQuiz() {
   return true;
 }
 
+function redirectToPlay() {
+  window.location.replace("play.html");
+}
+
