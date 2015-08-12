@@ -3,5 +3,19 @@
 }
 
 .row-divider {
-  border-bottom: 1.5px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+input[type="text"] {
+  box-sizing: border-box;
+}
+
+input[type="radio"] {
+  margin-top: -5px;
+  vertical-align: middle;
+}
+
+.text-lg {
+  font-size: 19px;
+  margin: 0 0 0 0;
 }

@@ -85,7 +85,7 @@ function createOptionNode(questionId, optionId) {
   var optionTextNode = document.createElement("input");
   optionTextNode.setAttribute("type", "text");
   optionTextNode.setAttribute("placeholder", "Type option text!");
-  optionTextNode.setAttribute("size", "84");
+  optionTextNode.setAttribute("size", "95");
   optionTextNode.setAttribute("class", "form-control input-lg");
 
   // create remove option node
@@ -144,7 +144,7 @@ function createQuestionNode(questionId) {
   questionTextNode.setAttribute("type", "text");
   questionTextNode.setAttribute("name", "question-"+questionId+"-text");
   questionTextNode.setAttribute("placeholder", "Type your question here!");
-  questionTextNode.setAttribute("size", "90");
+  questionTextNode.setAttribute("size", "100");
   questionTextNode.setAttribute("class", "form-control input-lg");
 
   tdNode.appendChild(questionTextNode);

@@ -17,15 +17,19 @@
       <div id="question-status"></div>
       <form class="form-inline">
         <h2 id="current-question-title">Question 1</h2> <!-- Change this when moving to next question (#question-title)-->
-        <div class="form-group">
+        <div>
           <table class="table borderless">
             <tbody>
             </tbody>
+
+
+
 
             <!-- Last row of the table for option -->
             <tbody id="quiz-control">
             <tr>
               <td class="text-right" colspan="2">
+                <button type="button" class="btn btn-primary btn-lg" onclick="nextQuestion()"> Next </button>
                 <button type="button" class="btn btn-success btn-lg" onclick="checkAnswer()"> Finish! </button>
               </td>
             </tr>
