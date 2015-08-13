@@ -2,7 +2,7 @@
  * Created by zeulb on 8/12/15.
  */
 
-var currentQuestion = 1;
+var currentQuestion = -1;
 var numberOfQuestions = 0;
 var answerKey = [];
 var statusClass = {
@@ -10,6 +10,8 @@ var statusClass = {
   "valid": "btn btn-success btn-sm",
   "invalid": "btn btn-danger btn-sm"
 };
+
+var statusBar = [];
 /*
 
 
@@ -41,21 +43,34 @@ var statusClass = {
 
  */
 
+function getOptionRadioNodes(questionId) {
+  return document.querySelectorAll("#question-"+questionId+"-section > tr > td > p > input[type=\"radio\"]");
+}
+
 function updateStatus(questionId, status) {
   var statusNode = document.getElementById("status-"+questionId);
   statusNode.setAttribute("class", statusClass[status]);
 }
 
 function addToStatusBar(questionId) {
+  statusBar.push("valid");
   var statusContainerNode = document.getElementById("question-status");
   var statusNode = document.createElement("button");
   statusNode.setAttribute("type", "button");
   statusNode.setAttribute("class", statusClass["valid"]);
   statusNode.setAttribute("id", "status-"+questionId);
   statusNode.setAttribute("onclick", "changeQuestionTo(this)");
-  statusNode.innerHTML = (questionId+1).toString();
+  statusNode.innerHTML = (questionId===numberOfQuestions)?"Result":((questionId+1).toString());
   statusContainerNode.appendChild(statusNode);
   statusContainerNode.appendChild(document.createTextNode("\u00A0"));
+}
+
+function createSymbolNode(type) {
+  var symbolNode = document.createElement("span");
+  symbolNode.setAttribute("class", "glyphicon glyphicon-"+type);
+  symbolNode.setAttribute("aria-hidden", "true");
+  symbolNode.innerHTML = " ";
+  return symbolNode;
 }
 
 function createQuestionTextNode(questionText) {
@@ -154,24 +169,24 @@ function getCookie(cname) {
 function setCurrentQuestionTo(questionId) {
   if (currentQuestion !== -1) {
     // Update status bar
-    updateStatus(currentQuestion, "valid");
+    updateStatus(currentQuestion, statusBar[currentQuestion]);
     // Hide current question
-    var currentQuestionNode = document.getElementById("question-"+currentQuestion+"-section");
+    var currentQuestionNode = document.getElementById("question-"+currentQuestion+"-section")||document.getElementById("result-section");
     currentQuestionNode.setAttribute("hidden", "");
   }
 
   // Change current question
   currentQuestion = questionId;
   // Update title with current question
-  document.getElementById("current-question-title").innerHTML = "Question "+(currentQuestion+1);
+  document.getElementById("current-question-title").innerHTML = (currentQuestion===numberOfQuestions)?"Result":"Question "+(currentQuestion+1);
   // Remove hidden attribute from current question
-  var newCurrentQuestionNode = document.getElementById("question-"+currentQuestion+"-section");
+  var newCurrentQuestionNode = document.getElementById("question-"+currentQuestion+"-section")||document.getElementById("result-section");
   newCurrentQuestionNode.removeAttribute("hidden");
 
   updateStatus(questionId, "current");
 
   var nextButtonNode = document.querySelector("#quiz-control > tr > td > button.btn.btn-primary.btn-lg");
-  if (questionId == numberOfQuestions-1) {
+  if (questionId >= numberOfQuestions-1) {
     nextButtonNode.setAttribute("disabled", "");
   }
   else {
@@ -186,7 +201,7 @@ function renderStatus() {
 }
 
 function changeQuestionTo(target) {
-  var questionId = parseInt(target.innerHTML)-1;
+  var questionId = (target.innerHTML!=="Result")?(parseInt(target.innerHTML)-1):numberOfQuestions;
   setCurrentQuestionTo(questionId);
 }
 
@@ -207,6 +222,88 @@ function getQuestionsDataFromCookies() {
   renderStatus(numberOfQuestions);
 
   setCurrentQuestionTo(0);
+}
+
+function checkAnswers(update) {
+
+  var numberOfCorrectQuestions = 0;
+  for(var questionId=0; questionId<numberOfQuestions; questionId++) {
+
+    var chosenOption = -1;
+
+    var optionRadioNodes = getOptionRadioNodes(questionId);
+    for(var index=0; index<optionRadioNodes.length; index++) {
+      var optionRadioNode = optionRadioNodes[index];
+      if (optionRadioNode.checked) {
+        chosenOption = index;
+      }
+    }
+
+    if (chosenOption === answerKey[questionId]) {
+      numberOfCorrectQuestions++;
+      statusBar[questionId] = "valid";
+    }
+    else {
+      statusBar[questionId] = "invalid";
+    }
+  }
+
+  return numberOfCorrectQuestions;
+}
+
+function disableQuestions() {
+  for(var questionId=0; questionId<numberOfQuestions; questionId++) {
+
+    var optionRadioNodes = getOptionRadioNodes(questionId);
+    for(var index=0; index<optionRadioNodes.length; index++) {
+      var optionRadioNode = optionRadioNodes[index];
+      optionRadioNode.setAttribute("disabled", "");
+    }
+  }
+}
+
+function displayCorrectAnswer() {
+  for(var questionId=0; questionId<numberOfQuestions; questionId++) {
+    var cssPathToCorrectOptionText = "#question-" + questionId + "-section > tr:nth-child(" + (answerKey[questionId]+2) + ") > td > p";
+    console.log(cssPathToCorrectOptionText);
+    var correctOptionNode = document.querySelector(cssPathToCorrectOptionText);
+    console.log(correctOptionNode);
+    correctOptionNode.appendChild(createSymbolNode("ok"));
+  }
+}
+
+function updateAllStatus() {
+  for(var questionId=0; questionId<numberOfQuestions; questionId++) {
+    updateStatus(questionId, statusBar[questionId]);
+  }
+}
+
+function displayResult() {
+  var controlNode = document.getElementById("quiz-control");
+  var tableNode = controlNode.parentNode;
+  var numberOfCorrectQuestions = checkAnswers();
+
+  // Add result section
+  var sectionNode = document.createElement("tbody");
+  sectionNode.setAttribute("id", "result-section");
+  sectionNode.setAttribute("hidden", "");
+  sectionNode.appendChild(createQuestionTextNode("You got "+numberOfCorrectQuestions+" correct out of "+numberOfQuestions+" questions!"));
+
+  tableNode.insertBefore(sectionNode, controlNode);
+
+  // Add to status bar
+  addToStatusBar(numberOfQuestions);
+  setCurrentQuestionTo(numberOfQuestions);
+
+  updateAllStatus();
+
+  // Disable all options
+  disableQuestions();
+  displayCorrectAnswer();
+
+  // Disable finisih options
+  document.querySelector("#quiz-control > tr > td > button.btn.btn-success.btn-lg").setAttribute("disabled", "");
+
 }
 
 getQuestionsDataFromCookies();
