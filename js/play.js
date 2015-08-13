@@ -224,7 +224,7 @@ function getQuestionsDataFromCookies() {
   setCurrentQuestionTo(0);
 }
 
-function checkAnswers(update) {
+function checkAnswers() {
 
   var numberOfCorrectQuestions = 0;
   for(var questionId=0; questionId<numberOfQuestions; questionId++) {
