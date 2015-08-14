@@ -11,31 +11,11 @@ var statusClass = {
   "invalid": "btn btn-danger btn-sm"
 };
 
-function deleteAllCookies() {
-  var cookies = document.cookie.split(";");
-
-  for (var i = 0; i < cookies.length; i++) {
-    var cookie = cookies[i];
-    var eqPos = cookie.indexOf("=");
-    var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+function storeToStorage(obj) {
+  localStorage.clear();
+  for (var prop in obj) {
+    localStorage.setItem(prop, obj[prop]);
   }
-}
-
-function dateIn(days) {
-  var d = new Date();
-  d.setTime(d.getTime() + (days*24*60*60*1000));
-  return d.toUTCString();
-}
-
-function storeToCookie(obj) {
-  deleteAllCookies();
-  var cookie = "";
-  for (var element in obj) {
-    cookie += (element+"="+obj[element]+"; ");
-  }
-  cookie += "expires="+dateIn(365);
-  document.cookie = cookie;
 }
 
 function createNewLineNode() {
@@ -320,8 +300,8 @@ function saveQuiz() {
     )
   }
 
-  // store this to cookies
-  storeToCookie({"quiz": JSON.stringify(questionsData)});
+  // store this to local storage
+  storeToStorage({"quiz": JSON.stringify(questionsData)});
   return true;
 }
 

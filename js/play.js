@@ -155,17 +155,6 @@ function extractQuestionsData(questionsData) {
   }
 }
 
-function getCookie(cname) {
-  var name = cname + "=";
-  var ca = document.cookie.split(';');
-  for(var i=0; i<ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0)==' ') c = c.substring(1);
-    if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-  }
-  return "";
-}
-
 function setCurrentQuestionTo(questionId) {
   if (currentQuestion !== -1) {
     // Update status bar
@@ -209,9 +198,8 @@ function nextQuestion() {
   setCurrentQuestionTo(currentQuestion+1);
 }
 
-function getQuestionsDataFromCookies() {
-  var questionsData = JSON.parse(getCookie("quiz"));
-  console.log(questionsData);
+function getQuestionsDataFromStorage() {
+  var questionsData = JSON.parse(localStorage.getItem("quiz"));
   numberOfQuestions = questionsData.length;
 
   // extract and render all questions and options
@@ -265,9 +253,7 @@ function disableQuestions() {
 function displayCorrectAnswer() {
   for(var questionId=0; questionId<numberOfQuestions; questionId++) {
     var cssPathToCorrectOptionText = "#question-" + questionId + "-section > tr:nth-child(" + (answerKey[questionId]+2) + ") > td > p";
-    console.log(cssPathToCorrectOptionText);
     var correctOptionNode = document.querySelector(cssPathToCorrectOptionText);
-    console.log(correctOptionNode);
     correctOptionNode.appendChild(createSymbolNode("ok"));
   }
 }
@@ -306,4 +292,4 @@ function displayResult() {
 
 }
 
-getQuestionsDataFromCookies();
+getQuestionsDataFromStorage();
