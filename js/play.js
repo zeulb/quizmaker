@@ -12,36 +12,6 @@ var statusClass = {
 };
 
 var statusBar = [];
-/*
-
-
- <!--
- <tbody id="question-0-section">
- <tr>
- <td colspan="2">
- <blockquote>
- <p class="lead">Budi Anduk sukanya makan apa cabe sambil tiduran?</p>
- </blockquote>
- </td>
- </tr>
- <tr>
- <td colspan="2">
- <p class="text-lg"><input type="radio" name="question-{questionId}-option" value="option-{optionId}" checked> Makan Cabe</p>
- </td>
- </tr>
- <tr>
- <td colspan="2">
- <p class="text-lg"><input type="radio" name="question-{questionId}-option" value="option-{optionId}" checked> Makan Cabe</p>
- </td>
- </tr>
- <tr>
- <td colspan="2">
- <p class="text-lg"><input type="radio" name="question-{questionId}-option" value="option-{optionId}" checked> Makan Cabe</p>
- </td>
- </tr>
- </tbody> -->
-
- */
 
 function getOptionRadioNodes(questionId) {
   return document.querySelectorAll("#question-"+questionId+"-section > tr > td > p > input[type=\"radio\"]");
@@ -59,7 +29,9 @@ function addToStatusBar(questionId) {
   statusNode.setAttribute("type", "button");
   statusNode.setAttribute("class", statusClass["valid"]);
   statusNode.setAttribute("id", "status-"+questionId);
-  statusNode.setAttribute("onclick", "changeQuestionTo(this)");
+  statusNode.addEventListener("click", function() {
+    changeQuestionTo(this);
+  });
   statusNode.innerHTML = (questionId===numberOfQuestions)?"Result":((questionId+1).toString());
   statusContainerNode.appendChild(statusNode);
   statusContainerNode.appendChild(document.createTextNode("\u00A0"));
@@ -292,4 +264,19 @@ function displayResult() {
 
 }
 
-getQuestionsDataFromStorage();
+function addQuizControlEventListener() {
+  // Add Option Button
+  document.querySelector("#quiz-control > tr > td > button.btn.btn-primary.btn-lg").addEventListener("click", function() {
+    nextQuestion();
+  });
+
+  // Add Finish Button
+  document.querySelector("#quiz-control > tr > td > button.btn.btn-success.btn-lg").addEventListener("click", function() {
+    displayResult();
+  });
+}
+
+(function() {
+  getQuestionsDataFromStorage();
+  addQuizControlEventListener();
+})();

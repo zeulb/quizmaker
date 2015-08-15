@@ -14,7 +14,9 @@ var statusClass = {
 function storeToStorage(obj) {
   localStorage.clear();
   for (var prop in obj) {
-    localStorage.setItem(prop, obj[prop]);
+    if (obj.hasOwnProperty(prop)) {
+      localStorage.setItem(prop, obj[prop]);
+    }
   }
 }
 
@@ -23,22 +25,6 @@ function createNewLineNode() {
 }
 
 function createOptionNode(questionId, optionId) {
-  /*
-    HTML Format :
-     <tr>
-       <td colspan="2">
-         <div class="radio">
-           <label class="radio-inline">
-             <input type="radio" name="question-{questionId}-option" value="option-{optionId}" checked>
-             &nbsp;&nbsp;
-             <input type="text" placeholder="Type option text!" size="84" class="form-control input-lg">
-             <br/>
-           </label>
-         </div>
-         &nbsp;<span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="removeOption(this)"></span>
-       </td>
-     </tr>
-   */
 
   // create <tr>
   var trNode = document.createElement("tr");
@@ -72,7 +58,9 @@ function createOptionNode(questionId, optionId) {
   var removeOptionNode = document.createElement("span");
   removeOptionNode.setAttribute("class", "glyphicon glyphicon-remove");
   removeOptionNode.setAttribute("aria-hidden", "true");
-  removeOptionNode.setAttribute("onclick", "removeOption(this)");
+  removeOptionNode.addEventListener("click", function() {
+    removeOption(this);
+  });
 
   // attach to labelNode
   labelNode.appendChild(radioNode);
@@ -219,7 +207,9 @@ function addToStatusBar(questionId) {
   statusNode.setAttribute("type", "button");
   statusNode.setAttribute("class", statusClass["current"]);
   statusNode.setAttribute("id", "status-"+questionId);
-  statusNode.setAttribute("onclick", "changeQuestionTo(this)");
+  statusNode.addEventListener("click", function() {
+    changeQuestionTo(this);
+  });
   statusNode.innerHTML = (questionId+1).toString();
   statusContainerNode.appendChild(statusNode);
   statusContainerNode.appendChild(document.createTextNode("\u00A0"));
@@ -259,9 +249,6 @@ function removeOption(target) {
   var parentNode = optionNode.parentNode;
   parentNode.removeChild(optionNode);
 }
-
-addQuestion();
-
 
 function saveQuiz() {
   var questionId;
@@ -309,3 +296,24 @@ function redirectToPlay() {
   window.location.replace("play.html");
 }
 
+function addQuizControlEventListener() {
+  // Add Option Button
+  document.querySelector("#quiz-control > tr > td:nth-child(1) > button").addEventListener("click", function() {
+    addOption();
+  });
+
+  // Add Question Button
+  document.querySelector("#quiz-control > tr > td.text-right > button.btn.btn-warning.btn-lg").addEventListener("click", function() {
+    addQuestion();
+  });
+
+  // Add Start Quiz Button
+  document.querySelector("#quiz-control > tr > td.text-right > button.btn.btn-success.btn-lg").addEventListener("click", function() {
+    saveQuiz()&&redirectToPlay();
+  });
+}
+
+(function () {
+  addQuestion();
+  addQuizControlEventListener();
+})();
